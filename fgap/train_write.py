@@ -44,7 +44,7 @@ y = data['WriteBw']  # 标签
 
 # 降低最后256个特征的权重
 if X.shape[1] >= 256:
-    X.iloc[:, -256:] *= 0.2  # 将最后256个特征的权重减小到50%
+    X.iloc[:, -256:] *= 0.1  # 将最后256个特征的权重减小到50%
 
 # 增加特定特征的权重
 features_to_increase_weight = ['ExeNumFiles', 'FileSystem', 'FileNumHosts']
@@ -56,7 +56,7 @@ X['FileNumHosts'] *= 10
 X['TopWriteLength'] *= 5
 
 # 划分数据集
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.29, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # 定义模型
 models = {

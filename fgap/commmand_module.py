@@ -35,12 +35,6 @@ def execute_command(command):
 def replace_spaces_with_underscores(input_string):
     return input_string.replace(' ', '_')
 
-def replace_dot_with_underscores(input_string):
-    return input_string.replace(',', '_')
-
-def replace_gang_with_underscores(input_string):
-    return input_string.replace('/', '_')
-
 def truncate_string_within200(text):
     """the file name is limited to 255 char"""
     if len(text) > 200:
@@ -114,8 +108,6 @@ def set_darshan_log_file():
     """set darshan dxt env"""
     print("input: {}" .format(fgap_config.INPUT_COMMAND))
     basename = replace_spaces_with_underscores(fgap_config.INPUT_COMMAND)
-    basename = replace_dot_with_underscores(basename)
-    basename = replace_gang_with_underscores(basename)
     basename = truncate_string_within200(basename)
     global DARSHAN_LOG_DIR
     if not fgap_config.DARSHAN_LOG_DIR.endswith('/'):
@@ -135,7 +127,7 @@ def set_darshan_dxt_config(command):
         except Exception as e:
             print(f"error when mkdir {fgap_config.DARSHAN_LOG_DIR}: {e}")
     env = "export DARSHAN_LOGFILE=" +  darshan_log_file + "; "
-    # env += "export DARSHAN_ENABLE_NONMPI=1; "
+    env += "export DARSHAN_ENABLE_NONMPI=1; "
     env += "export DXT_ENABLE_IO_TRACE=1; "
     return add_envset(command, env)
 

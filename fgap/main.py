@@ -124,7 +124,7 @@ def main():
     
     """
     fgap_config.FGAP_FILE_TAG = fgap_config.DARSHAN_LOG_FILE + ".file_fs_tag"
-    ado(pred_perf_file, fgap_config.FGAP_FILE_TAG)
+        ado(pred_perf_file, fgap_config.FGAP_FILE_TAG)
     log_message(f"ado: FGAP_FS: [{fgap_config.FGAP_FS}], FGAP_FILE_TAG: [{fgap_config.FGAP_FILE_TAG}]")
 
     """
@@ -132,7 +132,7 @@ def main():
     
     """
     client_cmd = add_libgkfs_lib(fgap_config.INPUT_COMMAND)
-    env_set = f"export LIBGKFS_HOSTS_FILE={fgap_config.GEKKOFS_HOSTS_FILE}; export FGAP_FS={fgap_config.FGAP_FS}; export FGAP_FILE_TAG={fgap_config.FGAP_FILE_TAG}; "
+    env_set = f"export FGAP_FS={fgap_config.FGAP_FS}; export FGAP_FILE_TAG={fgap_config.FGAP_FILE_TAG}; s"
     upgrade_cmd = add_envset(client_cmd, env_set)
     log_message(upgrade_cmd)
     execute_command(upgrade_cmd)

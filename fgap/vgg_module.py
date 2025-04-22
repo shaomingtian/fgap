@@ -11,13 +11,52 @@ import os
 import tensorflow as tf
 import random
 
+import shutil
+from datetime import datetime
+
+
 import fgap_config
 from logger_module import log_message
+from vae.vae_get_feature import get_vae_feature
 
 # Set seeds for reproducibility
 np.random.seed(42)
 random.seed(42)
 tf.random.set_seed(42)
+
+
+def copy_file_with_timestamp(src_path, target_dir):
+    """
+    Copy a file to target directory with timestamp-based filename
+
+    Args:
+        src_path (str): Absolute path of the source file
+        target_dir (str): Target directory path
+
+    Returns:
+        str: Full path of the new copied file
+    """
+    # Validate source file exists
+    if not os.path.isfile(src_path):
+        raise FileNotFoundError(f"Source file not found: {src_path}")
+
+    # Generate timestamp string with millisecond precision
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]  # Truncate last 3 digits for milliseconds
+
+    # Extract file extension
+    _, ext = os.path.splitext(src_path)
+
+    # Construct new filename and full destination path
+    new_filename = f"{timestamp}{ext}"
+    dest_path = os.path.join(target_dir, new_filename)
+
+    # Ensure target directory exists
+    os.makedirs(target_dir, exist_ok=True)
+
+    # Perform file copy operation
+    shutil.copy(src_path, dest_path)
+
+    return dest_path
 
 # Define a function to build the new model
 def build_feature_extractor(input_shape):
@@ -83,12 +122,20 @@ def update_excel_with_features(excel_path, image_name, features):
 # Main function
 def get_image_feature_to_excel(img_path, excel_path):
     image_name = os.path.basename(img_path)  # Get image filename
-    features = extract_features(img_path)  # Extract features
+    # features = extract_features(img_path)  # Extract features using VGG
+    fea = get_vae_feature(img_path)
+    # 将特征 tensor 转换为列表并输出
+    features = fea.cpu().numpy().flatten()
+
     # delete image or not
     if not fgap_config.IMAGE_KEEP:
         try:
             # check if exist
             if os.path.exists(img_path):
+                if fgap_config.IMAGE_COLLECT:
+                    # rename with timestamp and save image to IMAGE_DIR
+                    os.makedirs(fgap_config.IMAGE_DIR, exist_ok=True)
+                    copy_file_with_timestamp(img_path, fgap_config.IMAGE_DIR)
                 os.remove(img_path)  # delete image
                 log_message(f'File {img_path} has been deleted.')
             else:

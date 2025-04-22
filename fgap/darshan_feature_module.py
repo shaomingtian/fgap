@@ -57,10 +57,7 @@ def get_file_info(log_text):
     file_info_re = re.compile(r"# DXT, file_id: \d+, file_name: (?P<file_name>.+)")
     rank_info_re = re.compile(r"# DXT, rank: (?P<rank>\d+), hostname: (?P<hostname>.+)")
     fs_info_re = re.compile(r"# DXT, mnt_pt: (?P<mnt_pt>.+), fs_type: (?P<fs_type>\S+)")
-    stripe_info_re = re.compile(r"#\s*\[Component 1\]\s*stripe_ext:\s*0\s*-\s*EOF,\s*stripe_size:\s*(?P<stripe_size>\d+),\s*stripe_count:\s*(?P<stripe_count>\d+),\s*OSTs:\s*(?P<osts>\d+)")
-    #stripe_info_re = re.compile(r"# DXT, Lustre stripe_size: (?P<stripe_size>\d+), Lustre stripe_count: (?P<stripe_count>\d+)")
-    #stripe_info_re = re.compile(r"#       \[Component 1\] stripe_ext: 0 - EOF, stripe_size: (?P<stripe_size>\d+), stripe_count: (?P<stripe_count>\d+), OSTs: (?P<osts>\d+)")
-    #stripe_info_re = re.compile(r"#       \[Component 1\] stripe_ext: 0 - EOF, stripe_size: (?P<stripe_size>\d+), stripe_count: (?P<stripe_count>\d+), OSTs: (?P<osts>\d+)")
+    stripe_info_re = re.compile(r"# DXT, Lustre stripe_size: (?P<stripe_size>\d+), Lustre stripe_count: (?P<stripe_count>\d+)")
     data_re = re.compile(r"^\s*(?P<module>\S+)\s+(?P<rank>\d+)\s+(?P<wt_rd>\S+)\s+(?P<segment>\d+)\s+(?P<offset>\d+)\s+(?P<length>\d+)\s+(?P<start>\d+\.\d+)\s+(?P<end>\d+\.\d+)\s+\[\s*(?P<ost>\d+)\s*\]")
 
     # Data structure to store the parsed information
@@ -168,7 +165,6 @@ def get_file_info(log_text):
 
         data['num_rank'] = len(unique_ranks)
         data['num_hostname'] = len(unique_hostnames)
-        
         data['time_start_access'] = min(min(write['start'] for write in data['write']), min(read['start'] for read in data['read']))
         data['time_end_access'] = max(max(write['end'] for write in data['write']), max(read['end'] for read in data['read']))
 
